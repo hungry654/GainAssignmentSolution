@@ -32,4 +32,50 @@ int main(void) {
 	printf("고양이의 이름은 %s입니다.\n", name);
 	Sleep(3000);
 	system("cls");
+
+	while (1) {
+		// 현재 상태창
+		printf("======================현재 상태======================\n");
+		printf("현재까지 만든 수프: %d개\n", SoupCount);
+		printf("CP: %d 포인트\n", cp);
+		printf("%s의 기분(0~3): %d\n", name, mood);
+		switch (mood) {
+		case 0:
+			printf("기분이 매우 나쁩니다.\n");
+			break;
+		case 1:
+			printf("심심해 합니다.\n");
+			break;
+		case 2:
+			printf("식빵을 굽습니다.\n");
+			printf("  /\\_/\\ \n");
+			printf(" ( o.o )___/\\ \n");
+			printf("  | _____  | \\ \n");
+			printf(" (_|     (_| \n");
+			break;
+		case 3:
+			printf("골골송을 부릅니다.\n");
+			break;
+		}
+		printf("집사와의 관계(0~4): %d\n", affinity);
+		switch (affinity) {
+		case 0:
+			printf("곁에 오는 것조차 긿어합니다.\n");
+			break;
+		case 1:
+			printf("간식 자판기 취급입니다.\n");
+			break;
+		case 2:
+			printf("그럭저럭 쓸만한 집사입니다.\n");
+			break;
+		case 3:
+			printf("훌륭한 집사로 인정받고 있습니다.\n");
+			break;
+		case 4:
+			printf("집사 껌딱지입니다.\n");
+			break;
+		}
+		printf("=====================================================\n");
+		Sleep(3000);
+	}
 }
