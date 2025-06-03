@@ -77,5 +77,77 @@ int main(void) {
 		}
 		printf("=====================================================\n");
 		Sleep(3000);
+
+		//방 만들기
+		//첫 번째 줄
+		for (int i = 0; i < ROOM_WIDTH; i++) {
+			printf("#");
+		}
+		printf("\n");
+		//두 번째 줄
+		printf("#");
+		for (int i = 1; i < ROOM_WIDTH - 1; i++) {
+			if (i == HOME_POS) {
+				printf("H");
+			}
+			else if (i == BOWL_POS) {
+				printf("B");
+			}
+			else if (i == scr_pos) {
+				printf("S");
+			}
+			else if (i == tower_pos) {
+				printf("T");
+			}
+			else {
+				printf(" ");
+			}
+		}
+		printf("#\n");
+		//세 번째 줄
+		printf("#");
+		for (int i = 1; i < ROOM_WIDTH - 1; i++) {
+			if (i == cat_pos) {
+				printf("C");
+			}
+			else if (i == prev_pos && cat_pos != prev_pos) {
+				printf(".");
+			}
+			else {
+				printf(" ");
+			}
+		}
+		printf("#\n");
+		//네 번째 줄
+		for (int i = 0; i < ROOM_WIDTH; i++) {
+			printf("#");
+		}
+		printf("\n");
+
+		//랜덤 주사위 - 고양이 기분 변화
+		srand((unsigned)time(NULL));
+		int dice = rand() % 6 + 1;
+		printf("%d-%d: 주사위 눈이 %d 이하이면 그냥 기분이 나빠집니다.\n", 6, affinity, 6 - affinity);
+		printf("주사위를 굴립니다. 또르르...\n");
+		printf("%d이(가) 나왔습니다.\n", dice);
+		if (mood > 0) {
+			if (dice <= 6 - affinity) {
+				printf("아무 이유 없이 기분이 나빠집니다.\n");
+				printf("%s의 기분이 나빠집니다: %d -> %d\n", name, mood, mood - 1);
+				mood--;
+			}
+		}
+		else {
+			printf("%s의 기분이 너무 나빠서 더 이상 나빠질 수 없습니다.\n", name);
+			mood = 0; // 기분이 0 이하로 떨어지지 않도록
+		}
+
+		//고양이 행동
+		printf("%s가 행동을 합니다.\n", name);
+		prev_pos = cat_pos; // 이전 위치 저장
+		if (mood == 0) {
+			printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n", name);
+			cat_pos = HOME_POS; // 집으로 이동
+		}
 	}
 }
