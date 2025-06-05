@@ -76,6 +76,7 @@ int main(void) {
 			break;
 		}
 		printf("=====================================================\n\n");
+		Sleep(500);
 
 		//방 만들기
 		//첫 번째 줄
@@ -128,7 +129,7 @@ int main(void) {
 		int dice = rand() % 6 + 1;
 		printf("%d-%d: 주사위 눈이 %d 이하이면 그냥 기분이 나빠집니다.\n", 6, affinity, 6 - affinity);
 		printf("주사위를 굴립니다. 또르르...\n");
-		printf("%d이(가) 나왔습니다.\n", dice);
+		printf("%d이(가) 나왔습니다.\n\n", dice);
 		if (mood > 0) {
 			if (dice <= 6 - affinity) {
 				printf("아무 이유 없이 기분이 나빠집니다.\n");
@@ -136,7 +137,7 @@ int main(void) {
 				mood--;
 			}
 		}
-		else {
+		else if(mood == 0) {
 			printf("%s의 기분이 너무 나빠서 더 이상 나빠질 수 없습니다.\n\n", name);
 			mood = 0; // 기분이 0 이하로 떨어지지 않도록
 		}
@@ -170,8 +171,7 @@ int main(void) {
 				cat_pos = tower_pos; // 캣타워로 이동
 			}
 			else {
-				printf("%s은(는) 놀 거리가 없어서 기분이 매우 나빠집니다.\n", name);
-				mood--;
+				printf("%s은(는) 놀 거리가 없어서 기분이 좋지 않습니다.\n\n", name);
 			}
 		}
 		else if (mood == 2) {
@@ -221,7 +221,7 @@ int main(void) {
 			printf("%s이(가) 캣타워를 뛰어다닙니다..\n", name);
 			if (mood < 3) {
 				printf("%s의 기분이 많이 좋아집니다: %d -> %d\n\n", name, mood, mood + 2);
-				mood = mood + 2;
+				mood += 2;
 			}
 			else {
 				printf("%s이(가) 매우 기분이 좋아 이리저리 뛰어다닙니다.\n\n", name);
@@ -229,5 +229,98 @@ int main(void) {
 		}
 		Sleep(3000);
 		// 상호작용 (고양이와 집사)
+		srand(time(NULL));
+		int choice = -1; 
+		    //상호작용 선택지 입력
+		while (choice < 0 || choice > 1 + mouse_toy + laser_toy) {
+			printf("어떤상호작용을하시겠습니까?\n   0.아무것도하지않음 1.긁어주기\n");
+			if (mouse_toy) {
+				printf("   %d. 장난감 쥐로 놀아주기\n", mouse_state);
+			}
+			if (laser_toy) {
+				printf("   %d. 레이저 포인터로 놀아주기\n", laser_state);
+			}
+			printf(">> ");
+			scanf_s("%d", &choice);
+			if (choice < 0 || choice > 1 + mouse_toy + laser_toy) {
+				printf("잘못된 선택입니다. 다시 선택해주세요.\n");
+			}
+		}
+		    //상호작용 선택지별 처리
+		if (choice == 0) {
+			printf("아무것도 하지 않습니다.\n");
+			printf("주사위를 굴립니다. 또르르...\n");
+			mood--;
+			if (mood < 0) {
+				mood = 0; // 기분이 0 아래로 떨어지지 않도록 함.
+			}
+			int dice2 = rand() % 6 + 1;
+			printf("%d이(가) 나왔습니다.\n", dice2);
+			if (dice2 <= 5) {
+				printf("집사와의 관계가 나빠집니다.\n\n");
+				printf("집사와의 관계: %d -> %d\n", affinity, affinity - 1);
+				affinity--;
+				if (affinity < 0) {
+					affinity = 0; // 친밀도가 0 아래로 떨어지지 않도록 함.
+				}
+			}
+			else {
+				printf("다행히 집사와의 관계가 나빠지지 않았습니다.\n\n");
+			}
+		}
+		else if (choice == 1) {
+			printf("%s의 기분은 그대로입니다.: %d\n\n", name, mood);
+			printf("주사위를 굴립니다. 또르르...\n");
+			int dice2 = rand() % 6 + 1;
+			printf("%d이(가) 나왔습니다.\n", dice2);
+			if (dice2 >= 5) {
+				printf("집사에게 애교를 부립니다.\n");
+				printf("집사와의 관계가 좋아집니다.\n\n");
+				affinity++;
+				if (affinity > 4) {
+					affinity = 4; // 친밀도가 4 위로 올라가지 않도록 함.
+				}
+			}
+			else {
+				printf("%s의 기분이 그저그럽니다.\n", name);
+				printf("분발하세요. 집사!\n\n");
+			}
+		}
+		else if (choice == mouse_state && mouse_toy) {
+			printf("장난감 쥐로 %s와 놀아주었습니다.\n", name);
+			printf("%s의 기분이 조금 좋아집니다: %d -> %d\n", name, mood, mood + 1);
+			mood++;
+			int dice2 = rand() % 6 + 1;
+			printf("%d이(가) 나왔습니다.\n", dice2);
+			if (dice2 >= 4) {
+				printf("%s가 매우 재미있어합니다.\n", name);
+				printf("집사와의 관계가 좋아집니다.\n\n");
+				affinity++;
+				if (affinity > 4) {
+					affinity = 4; // 친밀도가 4 위로 올라가지 않도록 함.
+				}
+			}
+			else {
+				printf("%s가 흥미를 잃었습니다.\n", name);
+			}
+		}
+		else if (choice == laser_state && laser_toy) {
+			printf("레이저 포인터로 %s와 신나게 놀아주었습니다.\n", name);
+			printf("%s의 기분이 많이 좋아집니다: %d -> %d\n", name, mood, mood + 2);
+			mood += 2;
+			int dice2 = rand() % 6 + 1;
+			printf("%d이(가) 나왔습니다.\n", dice2);
+			if (dice2 >= 2) {
+				printf("%s가 매우 신나합니다.\n", name);
+				printf("집사와의 관계가 많이 좋아집니다.\n\n");
+				affinity++;
+				if (affinity > 4) {
+					affinity = 4; // 친밀도가 4 위로 올라가지 않도록 함.
+				}
+			}
+			else {
+				printf("집사가 피곤해합니다. %s가 실망합니다.\n\n", name);
+			}
+		}
 	}
 }
