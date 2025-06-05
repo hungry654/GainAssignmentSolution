@@ -149,5 +149,39 @@ int main(void) {
 			printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n", name);
 			cat_pos = HOME_POS; // 집으로 이동
 		}
+		else if (mood == 1) {
+			if (scratcher && cat_tower) {
+				int dist_scr = abs(cat_pos - scr_pos); 
+				int dist_tower = abs(cat_pos - tower_pos);
+				if (dist_scr <= dist_tower) {
+					printf("%s가 스크래처로 갑니다.\n", name);
+					cat_pos = scr_pos; // 스크래처로 이동
+				}
+				else {
+					printf("%s가 캣타워로 갑니다.\n", name);
+					cat_pos = tower_pos; // 캣타워로 이동
+				}
+			}
+			else if (scratcher) {
+				printf("%s가 스크래처로 갑니다.\n", name);
+				cat_pos = scr_pos; // 스크래처로 이동
+			}
+			else if (cat_tower) {
+				printf("%s가 캣타워로 갑니다.\n", name);
+				cat_pos = tower_pos; // 캣타워로 이동
+			}
+			else {
+				printf("%s은(는) 놀 거리가 없어서 기분이 매우 나빠집니다.\n", name);
+				mood--;
+			}
+		}
+		else if (mood == 2) {
+			printf("%s은(는) 식빵을 굽습니다.\n", name);
+			cat_pos = cat_pos; //제자리 유지
+		}
+		else if (mood == 3) {
+			printf("%s가 골골송을 부르며 수프를 만들러 갑니다.\n", name);
+			cat_pos = BOWL_POS; 
+		}
 	}
 }
