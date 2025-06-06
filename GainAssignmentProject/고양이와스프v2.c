@@ -289,8 +289,11 @@ int main(void) {
 		}
 		else if (choice == mouse_state && mouse_toy) {
 			printf("장난감 쥐로 %s와 놀아주었습니다.\n", name);
-			printf("%s의 기분이 조금 좋아집니다: %d -> %d\n", name, mood, mood + 1);
 			mood++;
+			if (mood > 3) {
+				mood = 3; // 기분이 3 위로 올라가지 않도록 함.
+			}
+			printf("%s의 기분이 조금 좋아집니다: %d -> %d\n", name, mood - 1, mood);
 			int dice2 = rand() % 6 + 1;
 			printf("%d이(가) 나왔습니다.\n", dice2);
 			if (dice2 >= 4) {
@@ -307,8 +310,11 @@ int main(void) {
 		}
 		else if (choice == laser_state && laser_toy) {
 			printf("레이저 포인터로 %s와 신나게 놀아주었습니다.\n", name);
-			printf("%s의 기분이 많이 좋아집니다: %d -> %d\n", name, mood, mood + 2);
 			mood += 2;
+			if (mood > 3) {
+				mood = 3; // 기분이 3 위로 올라가지 않도록 함.
+			}
+			printf("%s의 기분이 많이 좋아집니다: %d -> %d\n", name, mood - 2, mood );
 			int dice2 = rand() % 6 + 1;
 			printf("%d이(가) 나왔습니다.\n", dice2);
 			if (dice2 >= 2) {
@@ -329,7 +335,7 @@ int main(void) {
 		printf("%s의 기분(0~3): %d\n", name, mood);
 		printf("집사와의 관계(0~4): %d\n", affinity);
 		int cp_gain = 0;
-		if (mood < 0) {
+		if (mood > 0) {
 			cp_gain = (mood - 1) + affinity;
 		}
 		else {
@@ -470,7 +476,7 @@ int main(void) {
 					scratcher = 1;
 					for (int i = 0; i < ROOM_WIDTH - 1; i++) {
 						int r1 = rand() % (ROOM_WIDTH - 2) + 1; // 랜덤 위치 
-						if (r1 != HOME_POS && r1 != BOWL_POS && r1 == tower_pos) {
+						if (r1 != HOME_POS && r1 != BOWL_POS && r1 != tower_pos) {
 							scr_pos = r1;
 							break;
 						}
@@ -509,7 +515,7 @@ int main(void) {
 					cat_tower = 1;
 					for (int i = 0; i < ROOM_WIDTH - 1; i++) {
 						int r2 = rand() % (ROOM_WIDTH - 2) + 1; // 랜덤 위치 
-						if (r2 != HOME_POS && r2 != BOWL_POS && r2 == scr_pos) {
+						if (r2 != HOME_POS && r2 != BOWL_POS && r2 != scr_pos) {
 							tower_pos = r2;
 							break;
 						}
