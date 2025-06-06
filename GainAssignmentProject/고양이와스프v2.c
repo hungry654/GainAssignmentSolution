@@ -237,7 +237,7 @@ int main(void) {
 		int choice = -1; 
 		    //상호작용 선택지 입력
 		while (choice < 0 || choice > 1 + mouse_toy + laser_toy) {
-			printf("어떤상호작용을하시겠습니까?\n   0.아무것도하지않음 1.긁어주기\n");
+			printf("어떤상호작용을하시겠습니까?\n   0.아무것도하지않음\n   1.긁어주기\n");
 			if (mouse_toy) {
 				printf("   %d. 장난감 쥐로 놀아주기\n", mouse_state);
 			}
@@ -336,131 +336,225 @@ int main(void) {
 			cp_gain = affinity;
 		}
 		cp += cp_gain;
-		printf("%s의 기분과 친밀도에 따라서 CP가 %d 포인트 생산되었습니다.\n", name, cp_gain);
-		printf("현재 보유 CP: %d 포인트\n\n", cp);
-
+		printf("%s의 기분과 친밀도에 따라서 CP가 %d 포인트 생산되었습니다.\n\n", name, cp_gain);
+		
+		printf("현재 보유 CP: %d 포인트\n", cp);
 		//상점 목록
 		int choice_item = -1;
+		printf("상점에서 물건을 살 수 있습니다.\n");
+		printf("어떤 물건을 구매할까요?\n");
+		printf("  0. 아무 것도 사지 않는다.\n");
+		if (mouse_toy) {
+			printf("  1. 장난감 쥐: 1 CP (품절)\n");
+		}
+		else {
+			printf("  1. 장난감 쥐: 1 CP\n");
+		}
+		if (laser_toy) {
+			printf("  2. 레이저 포인터: 2 CP (품절)\n");
+		}
+		else {
+			printf("  2. 레이저 포인터: 2 CP\n");
+		}
+		if (scratcher) {
+			printf("  3. 스크래처: 4 CP (품절)\n");
+		}
+		else {
+			printf("  3. 스크래처: 4 CP\n");
+		}
+		if (cat_tower) {
+			printf("  4. 캣 타워: 6 CP (품절)\n");
+		}
+		else {
+			printf("  4. 캣 타워: 6 CP\n");
+		}
+		printf(">> ");
+		scanf_s("%d", &choice_item);
 		while (choice_item < 0 || choice_item > 4) {
-			printf("상점에서 물건을 살 수 있습니다.\n");
-			printf("어떤 물건을 구매할까요?\n");
-			printf("  0. 아무 것도 사지 않는다.\n");
-			if (mouse_toy) {
-				printf("  1. 장난감 쥐: 1 CP (품절)\n");
-			}
-			else {
-				printf("  1. 장난감 쥐: 1 CP\n");
-			}
-			if (laser_toy) {
-				printf("  2. 레이저 포인터: 2 CP (품절)\n");
-			}
-			else {
-				printf("  2. 레이저 포인터: 2 CP\n");
-			}
-			if (scratcher) {
-				printf("  3. 스크래처: 4 CP (품절)\n");
-			}
-			else {
-				printf("  3. 스크래처: 4 CP\n");
-			}
-			if (cat_tower) {
-				printf("  4. 캣 타워: 6 CP (품절)\n");
-			}
-			else {
-				printf("  4. 캣 타워: 6 CP\n");
-			}
+			printf("잘못된 선택입니다. 다시 입력해주세요.\n");
 			printf(">> ");
 			scanf_s("%d", &choice_item);
 		}
 
 		//상점 구매 처리
-		if (choice_item == 1) {
-			if (mouse_toy) {
-				printf("장난감 쥐는 이미 구매했습니다.\n\n");
-			}
-			else if (cp >= 1) {
-				printf("장난감 쥐를 구매했습니다.\n");
-				mouse_toy = 1; // 장난감 쥐 구매
-				if (laser_toy) { //상품 번호 지정
-					mouse_state = 3;
+		int item_check = 0;
+		while (!item_check) {
+			if (choice_item == 1) {
+				if (mouse_toy) {
+					printf("장난감 쥐는 이미 구매했습니다.\n\n");
+					printf("다시 선택해주세요.>> ");
+					scanf_s("%d", &choice_item); // 재입력
+					while (choice_item < 0 || choice_item > 4) {
+						printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+						printf(">> ");
+						scanf_s("%d", &choice_item);
+					}
+					continue; 
+				}
+				else if (cp >= 1) {
+					printf("장난감 쥐를 구매했습니다.\n");
+					mouse_toy = 1; // 장난감 쥐 구매
+					if (laser_toy) { //상품 번호 지정
+						mouse_state = 3;
+					}
+					else {
+						mouse_state = 2;
+					}
+					cp -= 1;
+					item_check = 1; // 구매 완료
+					printf("현재 보유 CP: %d 포인트\n\n", cp);
 				}
 				else {
-					mouse_state = 2; 
+					printf("CP가 부족합니다. 장난감 쥐를 구매할 수 없습니다.\n\n");
+					printf("다시 선택해주세요.>> ");
+					scanf_s("%d", &choice_item); // 재입력
+					while (choice_item < 0 || choice_item > 4) {
+						printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+						printf(">> ");
+						scanf_s("%d", &choice_item);
+					}
+					continue;
 				}
-				cp -= 1; 
-				printf("장난감 쥐를 구매했습니다.\n");
-				printf("현재 보유 CP: %d 포인트\n\n", cp);
 			}
-			else {
-				printf("CP가 부족합니다. 장난감 쥐를 구매할 수 없습니다.\n\n");
-			}
-		 }
-		else if (choice_item == 2) {
-			if (laser_toy) {
-				printf("레이저 포인터는 이미 구매했습니다.\n\n");
-			}
-			else if (cp >= 2) {
-				printf("레이저 포인터를 구매했습니다.\n");
-				laser_toy = 1; // 장난감 쥐 구매
-				if (mouse_toy) { //상품 번호 지정
-					laser_state = 3;
+			else if (choice_item == 2) {
+				if (laser_toy) {
+					printf("레이저 포인터는 이미 구매했습니다.\n\n");
+					printf("다시 선택해주세요.>> ");
+					scanf_s("%d", &choice_item); // 재입력
+					while (choice_item < 0 || choice_item > 4) {
+						printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+						printf(">> ");
+						scanf_s("%d", &choice_item);
+					}
+					continue;
+				}
+				else if (cp >= 2) {
+					printf("레이저 포인터를 구매했습니다.\n");
+					laser_toy = 1; // 장난감 쥐 구매
+					if (mouse_toy) { //상품 번호 지정
+						laser_state = 3;
+					}
+					else {
+						laser_state = 2;
+					}
+					cp -= 2;
+					item_check = 1; // 구매 완료
+					printf("현재 보유 CP: %d 포인트\n\n", cp);
 				}
 				else {
-					laser_state = 2;
-				}
-				cp -= 2;
-				printf("레이저 포인터를 구매했습니다.\n");
-				printf("현재 보유 CP: %d 포인트\n\n", cp);
-			}
-			else {
-				printf("CP가 부족합니다. 레이저 포인터를 구매할 수 없습니다.\n\n");
-			}
-		}
-		else if (choice_item == 3) {
-			if (scratcher) {
-				printf("스크래처는 이미 구매했습니다.\n\n");
-			}
-			else if (cp >= 4) {
-				printf("스크래처를 구매했습니다.\n");
-				scratcher = 1; 
-				for (int i = 0; i < ROOM_WIDTH - 1; i++) {
-					int r1 = rand() % (ROOM_WIDTH - 2) + 1; // 랜덤 위치 
-					if (r1 != HOME_POS && r1 != BOWL_POS && r1 == tower_pos) {
-						scr_pos = r1;
-						break;
+					printf("CP가 부족합니다. 레이저 포인터를 구매할 수 없습니다.\n\n");
+					printf("다시 선택해주세요.>> ");
+					scanf_s("%d", &choice_item); // 재입력
+					while (choice_item < 0 || choice_item > 4) {
+						printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+						printf(">> ");
+						scanf_s("%d", &choice_item);
 					}
+					continue;
 				}
-				printf("스크래처 설치를 완료했습니다.\n");
-				cp -= 4;
-				printf("현재 보유 CP: %d 포인트\n\n", cp);
 			}
-			else {
-				printf("CP가 부족합니다. 스크래처를 구매할 수 없습니다.\n\n");
-			}
-		}
-		else if (choice_item == 4) {
-			if (cat_tower) {
-				printf("캣 타워는 이미 구매했습니다.\n\n");
-			}
-			else if (cp >= 6) {
-				printf("캣 타워를 구매했습니다.\n");
-				cat_tower = 1;
-				for (int i = 0; i < ROOM_WIDTH - 1; i++) {
-					int r2 = rand() % (ROOM_WIDTH - 2) + 1; // 랜덤 위치 
-					if (r2 != HOME_POS && r2 != BOWL_POS && r2 == scr_pos) {
-						tower_pos = r2;
-						break;
+			else if (choice_item == 3) {
+				if (scratcher) {
+					printf("스크래처는 이미 구매했습니다.\n\n");
+					printf("다시 선택해주세요.>> ");
+					scanf_s("%d", &choice_item); // 재입력
+					while (choice_item < 0 || choice_item > 4) {
+						printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+						printf(">> ");
+						scanf_s("%d", &choice_item);
 					}
+					continue;
 				}
-				printf("캣 타워 설치를 완료했습니다.\n");
-				cp -= 6;
-				printf("현재 보유 CP: %d 포인트\n\n", cp);
+				else if (cp >= 4) {
+					printf("스크래처를 구매했습니다.\n");
+					scratcher = 1;
+					for (int i = 0; i < ROOM_WIDTH - 1; i++) {
+						int r1 = rand() % (ROOM_WIDTH - 2) + 1; // 랜덤 위치 
+						if (r1 != HOME_POS && r1 != BOWL_POS && r1 == tower_pos) {
+							scr_pos = r1;
+							break;
+						}
+					}
+					printf("스크래처 설치를 완료했습니다.\n");
+					cp -= 4;
+					item_check = 1; // 구매 완료
+					printf("현재 보유 CP: %d 포인트\n\n", cp);
+				}
+				else {
+					printf("CP가 부족합니다. 스크래처를 구매할 수 없습니다.\n\n");
+					printf("다시 선택해주세요.>> ");
+					scanf_s("%d", &choice_item); // 재입력
+					while (choice_item < 0 || choice_item > 4) {
+						printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+						printf(">> ");
+						scanf_s("%d", &choice_item);
+					}
+					continue;
+				}
 			}
-			else {
-				printf("CP가 부족합니다. 캣 타워를 구매할 수 없습니다.\n\n");
+			else if (choice_item == 4) {
+				if (cat_tower) {
+					printf("캣 타워는 이미 구매했습니다.\n\n");
+					printf("다시 선택해주세요.>> ");
+					scanf_s("%d", &choice_item); // 재입력
+					while (choice_item < 0 || choice_item > 4) {
+						printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+						printf(">> ");
+						scanf_s("%d", &choice_item);
+					}
+					continue;
+				}
+				else if (cp >= 6) {
+					printf("캣 타워를 구매했습니다.\n");
+					cat_tower = 1;
+					for (int i = 0; i < ROOM_WIDTH - 1; i++) {
+						int r2 = rand() % (ROOM_WIDTH - 2) + 1; // 랜덤 위치 
+						if (r2 != HOME_POS && r2 != BOWL_POS && r2 == scr_pos) {
+							tower_pos = r2;
+							break;
+						}
+					}
+					printf("캣 타워 설치를 완료했습니다.\n");
+					cp -= 6;
+					item_check = 1; // 구매 완료
+					printf("현재 보유 CP: %d 포인트\n\n", cp);
+				}
+				else {
+					printf("CP가 부족합니다. 캣 타워를 구매할 수 없습니다.\n\n");
+					printf("다시 선택해주세요.>> ");
+					scanf_s("%d", &choice_item); // 재입력
+					while (choice_item < 0 || choice_item > 4) {
+						printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+						printf(">> ");
+						scanf_s("%d", &choice_item);
+					}
+					continue;
+				}
+			}
+			else if (choice_item == 0) {
+				printf("아무것도 구매하지 않습니다.\n\n");
+				item_check = 1; //구매 확인
 			}
 		}
 
 		//돌발퀘스트!!
+		if (turn == 3) {
+			char quest[100] = { 0 };
+			printf("****돌발 퀘스트 발생!!****\n");
+			printf("본인 고양이의 이름을 입력하세요! >> ");
+			while (1) {
+				scanf_s("%s", quest, (unsigned)sizeof(quest));
+				if (strcmp(quest, name) == 0) {
+					printf("퀘스트 성공! %s의 이름을 정확히 입력했습니다.\n", name);
+					break;
+				}
+				else {
+					printf("퀘스트 실패! 다시 시도하세요. >> ");
+				}
+			}
+		}
+		turn++;
+		Sleep(2000);
 	}
+	return 0;
 }
