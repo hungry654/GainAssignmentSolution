@@ -123,7 +123,6 @@ int main(void) {
 			printf("#");
 		}
 		printf("\n\n");
-		Sleep(500);
 
 		//랜덤 주사위 - 고양이 기분 변화
 		srand((unsigned)time(NULL));
@@ -142,7 +141,6 @@ int main(void) {
 			printf("%s의 기분이 너무 나빠서 더 이상 나빠질 수 없습니다.\n\n", name);
 			mood = 0; // 기분이 0 이하로 떨어지지 않도록
 		}
-		Sleep(500);
 
 		//고양이 행동
 		printf("%s가 행동을 합니다.\n", name);
@@ -184,7 +182,6 @@ int main(void) {
 			printf("%s가 골골송을 부르며 수프를 만들러 갑니다.\n\n", name);
 			cat_pos = BOWL_POS; 
 		}
-		Sleep(500);
 
 		// 고양이 위치에 따른 행동
 		if (cat_pos == HOME_POS && prev_pos == HOME_POS) {
@@ -230,8 +227,7 @@ int main(void) {
 				printf("%s이(가) 매우 기분이 좋아 이리저리 뛰어다닙니다.\n\n", name);
 			}
 		}
-		Sleep(500);
-		
+		Sleep(3000);
 		// 상호작용 (고양이와 집사)
 		srand(time(NULL));
 		int choice = -1; 
@@ -246,6 +242,9 @@ int main(void) {
 			}
 			printf(">> ");
 			scanf_s("%d", &choice);
+			if (choice < 0 || choice > 1 + mouse_toy + laser_toy) {
+				printf("잘못된 선택입니다. 다시 선택해주세요.\n");
+			}
 		}
 		    //상호작용 선택지별 처리
 		if (choice == 0) {
@@ -323,36 +322,5 @@ int main(void) {
 				printf("집사가 피곤해합니다. %s가 실망합니다.\n\n", name);
 			}
 		}
-		Sleep(500);
-
-		// CP 포인트 생산
-		printf("%s의 기분(0~3): %d\n", name, mood);
-		printf("집사와의 관계(0~4): %d\n", affinity);
-		int cp_gain = 0;
-		if (mood > 0) {
-			cp_gain = (mood - 1) + affinity; 
-		}
-		else {
-			cp_gain = affinity;
-		}
-		cp += cp_gain;
-		printf("%s의 기분과 친밀도에 따라서 CP가 %d 포인트 생산되었습니다.\n", name, cp_gain);
-		printf("현재 보유 CP: %d 포인트\n\n", cp);
-
-		//상점 목록
-		int choice_item = -1;
-		while (choice_item < 0 || choice_item > 4) {
-			printf("상점에서 물건을 살 수 있습니다.\n");
-			printf("어떤 물건을 구매할까요?\n");
-			printf("  0. 아무것도 구매하지 않음\n");
-			printf("  1. 장난감 쥐: 1 CP\n");
-			printf("  2. 레이저 포인터: 2 CP\n");
-			printf("  3. 스크래처: 4 CP\n");
-			printf("  4. 캣 타워: 6 CP\n");
-			printf(">> ");
-			scanf_s("%d", &choice_item);
-		}
-
-		//상점 구매 처리
 	}
 }
