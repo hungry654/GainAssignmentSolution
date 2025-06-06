@@ -329,7 +329,7 @@ int main(void) {
 		printf("%s의 기분(0~3): %d\n", name, mood);
 		printf("집사와의 관계(0~4): %d\n", affinity);
 		int cp_gain = 0;
-		if (mood > 0) {
+		if (mood < 0) {
 			cp_gain = (mood - 1) + affinity;
 		}
 		else {
@@ -344,15 +344,123 @@ int main(void) {
 		while (choice_item < 0 || choice_item > 4) {
 			printf("상점에서 물건을 살 수 있습니다.\n");
 			printf("어떤 물건을 구매할까요?\n");
-			printf("  0. 아무것도 구매하지 않음\n");
-			printf("  1. 장난감 쥐: 1 CP\n");
-			printf("  2. 레이저 포인터: 2 CP\n");
-			printf("  3. 스크래처: 4 CP\n");
-			printf("  4. 캣 타워: 6 CP\n");
+			printf("  0. 아무 것도 사지 않는다.\n");
+			if (mouse_toy) {
+				printf("  1. 장난감 쥐: 1 CP (품절)\n");
+			}
+			else {
+				printf("  1. 장난감 쥐: 1 CP\n");
+			}
+			if (laser_toy) {
+				printf("  2. 레이저 포인터: 2 CP (품절)\n");
+			}
+			else {
+				printf("  2. 레이저 포인터: 2 CP\n");
+			}
+			if (scratcher) {
+				printf("  3. 스크래처: 4 CP (품절)\n");
+			}
+			else {
+				printf("  3. 스크래처: 4 CP\n");
+			}
+			if (cat_tower) {
+				printf("  4. 캣 타워: 6 CP (품절)\n");
+			}
+			else {
+				printf("  4. 캣 타워: 6 CP\n");
+			}
 			printf(">> ");
 			scanf_s("%d", &choice_item);
 		}
 
 		//상점 구매 처리
+		if (choice_item == 1) {
+			if (mouse_toy) {
+				printf("장난감 쥐는 이미 구매했습니다.\n\n");
+			}
+			else if (cp >= 1) {
+				printf("장난감 쥐를 구매했습니다.\n");
+				mouse_toy = 1; // 장난감 쥐 구매
+				if (laser_toy) { //상품 번호 지정
+					mouse_state = 3;
+				}
+				else {
+					mouse_state = 2; 
+				}
+				cp -= 1; 
+				printf("장난감 쥐를 구매했습니다.\n");
+				printf("현재 보유 CP: %d 포인트\n\n", cp);
+			}
+			else {
+				printf("CP가 부족합니다. 장난감 쥐를 구매할 수 없습니다.\n\n");
+			}
+		 }
+		else if (choice_item == 2) {
+			if (laser_toy) {
+				printf("레이저 포인터는 이미 구매했습니다.\n\n");
+			}
+			else if (cp >= 2) {
+				printf("레이저 포인터를 구매했습니다.\n");
+				laser_toy = 1; // 장난감 쥐 구매
+				if (mouse_toy) { //상품 번호 지정
+					laser_state = 3;
+				}
+				else {
+					laser_state = 2;
+				}
+				cp -= 2;
+				printf("레이저 포인터를 구매했습니다.\n");
+				printf("현재 보유 CP: %d 포인트\n\n", cp);
+			}
+			else {
+				printf("CP가 부족합니다. 레이저 포인터를 구매할 수 없습니다.\n\n");
+			}
+		}
+		else if (choice_item == 3) {
+			if (scratcher) {
+				printf("스크래처는 이미 구매했습니다.\n\n");
+			}
+			else if (cp >= 4) {
+				printf("스크래처를 구매했습니다.\n");
+				scratcher = 1; 
+				for (int i = 0; i < ROOM_WIDTH - 1; i++) {
+					int r1 = rand() % (ROOM_WIDTH - 2) + 1; // 랜덤 위치 
+					if (r1 != HOME_POS && r1 != BOWL_POS && r1 == tower_pos) {
+						scr_pos = r1;
+						break;
+					}
+				}
+				printf("스크래처 설치를 완료했습니다.\n");
+				cp -= 4;
+				printf("현재 보유 CP: %d 포인트\n\n", cp);
+			}
+			else {
+				printf("CP가 부족합니다. 스크래처를 구매할 수 없습니다.\n\n");
+			}
+		}
+		else if (choice_item == 4) {
+			if (cat_tower) {
+				printf("캣 타워는 이미 구매했습니다.\n\n");
+			}
+			else if (cp >= 6) {
+				printf("캣 타워를 구매했습니다.\n");
+				cat_tower = 1;
+				for (int i = 0; i < ROOM_WIDTH - 1; i++) {
+					int r2 = rand() % (ROOM_WIDTH - 2) + 1; // 랜덤 위치 
+					if (r2 != HOME_POS && r2 != BOWL_POS && r2 == scr_pos) {
+						tower_pos = r2;
+						break;
+					}
+				}
+				printf("캣 타워 설치를 완료했습니다.\n");
+				cp -= 6;
+				printf("현재 보유 CP: %d 포인트\n\n", cp);
+			}
+			else {
+				printf("CP가 부족합니다. 캣 타워를 구매할 수 없습니다.\n\n");
+			}
+		}
+
+		//돌발퀘스트!!
 	}
 }
