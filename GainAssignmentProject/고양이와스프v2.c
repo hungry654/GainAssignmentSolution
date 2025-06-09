@@ -36,6 +36,7 @@ int main(void) {
 	while (1) {
 		// 현재 상태창
 		printf("======================현재 상태======================\n");
+		printf("현재 턴: %d\n", turn);
 		printf("현재까지 만든 수프: %d개\n", SoupCount);
 		printf("CP: %d 포인트\n", cp);
 		printf("%s의 기분(0~3): %d\n", name, mood);
@@ -78,53 +79,6 @@ int main(void) {
 		printf("=====================================================\n\n");
 		Sleep(500);
 
-		//방 만들기
-		//첫 번째 줄
-		for (int i = 0; i < ROOM_WIDTH; i++) {
-			printf("#");
-		}
-		printf("\n");
-		//두 번째 줄
-		printf("#");
-		for (int i = 1; i < ROOM_WIDTH - 1; i++) {
-			if (i == HOME_POS) {
-				printf("H");
-			}
-			else if (i == BOWL_POS) {
-				printf("B");
-			}
-			else if (i == scr_pos) {
-				printf("S");
-			}
-			else if (i == tower_pos) {
-				printf("T");
-			}
-			else {
-				printf(" ");
-			}
-		}
-		printf("#\n");
-		//세 번째 줄
-		printf("#");
-		for (int i = 1; i < ROOM_WIDTH - 1; i++) {
-			if (i == cat_pos) {
-				printf("C");
-			}
-			else if (i == prev_pos && cat_pos != prev_pos) {
-				printf(".");
-			}
-			else {
-				printf(" ");
-			}
-		}
-		printf("#\n");
-		//네 번째 줄
-		for (int i = 0; i < ROOM_WIDTH; i++) {
-			printf("#");
-		}
-		printf("\n\n");
-		Sleep(500);
-
 		//랜덤 주사위 - 고양이 기분 변화
 		srand((unsigned)time(NULL));
 		int dice = rand() % 6 + 1;
@@ -138,7 +92,7 @@ int main(void) {
 				mood--;
 			}
 		}
-		else if(mood == 0) {
+		else if (mood == 0) {
 			printf("%s의 기분이 너무 나빠서 더 이상 나빠질 수 없습니다.\n\n", name);
 			mood = 0; // 기분이 0 이하로 떨어지지 않도록
 		}
@@ -229,12 +183,14 @@ int main(void) {
 
 		// 고양이 위치에 따른 행동
 		if (cat_pos == HOME_POS && prev_pos == HOME_POS) {
-			if (mood < 3) {
-				printf("%s의 기분이 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
-				mood++;
-			}
-			else if (mood == 3) {
-				printf("%s의 기분이 최고조입니다.\n\n", name);
+			if (turn >= 2) {
+				if (mood < 3) {
+					printf("%s의 기분이 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
+					mood++;
+				}
+				else if (mood == 3) {
+					printf("%s의 기분이 최고조입니다.\n\n", name);
+				}
 			}
 		}
 		else if (cat_pos == BOWL_POS) {
@@ -280,6 +236,53 @@ int main(void) {
 				mood == 3;
 			}
 		}
+		Sleep(500);
+
+		//방 만들기
+	//첫 번째 줄
+		for (int i = 0; i < ROOM_WIDTH; i++) {
+			printf("#");
+		}
+		printf("\n");
+		//두 번째 줄
+		printf("#");
+		for (int i = 1; i < ROOM_WIDTH - 1; i++) {
+			if (i == HOME_POS) {
+				printf("H");
+			}
+			else if (i == BOWL_POS) {
+				printf("B");
+			}
+			else if (i == scr_pos) {
+				printf("S");
+			}
+			else if (i == tower_pos) {
+				printf("T");
+			}
+			else {
+				printf(" ");
+			}
+		}
+		printf("#\n");
+		//세 번째 줄
+		printf("#");
+		for (int i = 1; i < ROOM_WIDTH - 1; i++) {
+			if (i == cat_pos) {
+				printf("C");
+			}
+			else if (i == prev_pos && cat_pos != prev_pos) {
+				printf(".");
+			}
+			else {
+				printf(" ");
+			}
+		}
+		printf("#\n");
+		//네 번째 줄
+		for (int i = 0; i < ROOM_WIDTH; i++) {
+			printf("#");
+		}
+		printf("\n\n");
 		Sleep(500);
 
 		// 상호작용 (고양이와 집사)
@@ -611,6 +614,7 @@ int main(void) {
 		}
 		turn++;
 		Sleep(2000);
+		system("cls");
 	}
 	return 0;
 	// 완성
