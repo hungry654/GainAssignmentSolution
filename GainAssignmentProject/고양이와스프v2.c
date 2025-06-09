@@ -15,7 +15,7 @@ int main(void) {
 	int mouse_toy = 0, laser_toy = 0, scratcher = 0, cat_tower = 0;
 	int mouse_state = 0, laser_state = 0; // 구매 후 상품상태
 	int scr_pos = -1, tower_pos = -1; // 구조물 초기 위치 (-1은 위치 없음을 의미)
-	int cat_pos = 2, prev_pos = 2; //고양이 초기 위치, 고양이 이전 위치
+	int cat_pos = 1, prev_pos = 1; //고양이 초기 위치, 고양이 이전 위치
 	int turn = 1; //첫 번째 턴
 	char name[100] = { 0 };
 
@@ -148,41 +148,82 @@ int main(void) {
 		printf("%s가 행동을 합니다.\n", name);
 		prev_pos = cat_pos; // 이전 위치 저장
 		if (mood == 0) {
-			printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n\n", name);
-			cat_pos = HOME_POS; // 집으로 이동
+			if (cat_pos != HOME_POS) {
+				printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n\n", name);
+				cat_pos--; // 집으로 이동
+			}
 		}
 		else if (mood == 1) {
 			if (scratcher && cat_tower) {
 				int dist_scr = abs(cat_pos - scr_pos); 
 				int dist_tower = abs(cat_pos - tower_pos);
-				if (dist_scr <= dist_tower) {
-					printf("%s가 스크래처로 갑니다.\n\n", name);
-					cat_pos = scr_pos; // 스크래처로 이동
+				if (dist_scr < dist_tower) {
+					int close_scr = 0;
+					if (close_scr == 0 && cat_pos != scr_pos) {
+						printf("%s가 스크래처로 갑니다.\n\n", name);
+						if (cat_pos < scratcher) {
+							cat_pos++; // 스크래처로 이동
+						}
+						else if (cat_pos > scratcher) {
+							cat_pos--; // 스크래처로 이동
+						}
+					}
 				}
-				else {
-					printf("%s가 캣타워로 갑니다.\n\n", name);
-					cat_pos = tower_pos; // 캣타워로 이동
+				else if (dist_scr > dist_tower) {
+					int close_tower = 0;
+					if (close_tower == 0 && cat_pos != tower_pos) {
+						printf("%s가 캣타워로 갑니다.\n\n", name);
+						if (cat_pos < tower_pos) {
+							cat_pos++; // 캣타워로 이동
+						}
+						else if (cat_pos > tower_pos) {
+							cat_pos--; // 캣타워로 이동
+						}
+					}
 				}
 			}
 			else if (scratcher) {
-				printf("%s가 스크래처로 갑니다.\n\n", name);
-				cat_pos = scr_pos; // 스크래처로 이동
+				if (cat_pos != scr_pos) {
+					printf("%s가 스크래처로 갑니다.\n\n", name);
+					if (cat_pos < scratcher) {
+						cat_pos++; // 스크래처로 이동
+					}
+					else if (cat_pos > scratcher) {
+						cat_pos--; // 스크래처로 이동
+					}
+				}
 			}
 			else if (cat_tower) {
-				printf("%s가 캣타워로 갑니다.\n\n", name);
-				cat_pos = tower_pos; // 캣타워로 이동
+				if (cat_pos != tower_pos) {
+					printf("%s가 캣타워로 갑니다.\n\n", name);
+					if (cat_pos < tower_pos) {
+						cat_pos++; // 캣타워로 이동
+					}
+					else if (cat_pos > tower_pos) {
+						cat_pos--; // 캣타워로 이동
+					}
+				}
 			}
 			else {
 				printf("%s은(는) 놀 거리가 없어서 기분이 좋지 않습니다.\n\n", name);
+				printf("%s의 기분이 나빠집니다: %d -> %d\n\n", name, mood, mood - 1);
+				mood--;
 			}
 		}
 		else if (mood == 2) {
 			printf("%s은(는) 식빵을 굽습니다.\n\n", name);
-			cat_pos = cat_pos; //제자리 유지
 		}
 		else if (mood == 3) {
 			printf("%s가 골골송을 부르며 수프를 만들러 갑니다.\n\n", name);
-			cat_pos = BOWL_POS; 
+			if (cat_pos != BOWL_POS) {
+				printf("%s가 냄비로 갑니다.\n\n", name);
+				if (cat_pos < ROOM_WIDTH - 2) {
+					 cat_pos++;
+				}
+				else {
+					printf("벽에 막혀 움직일 수 없습니다.\n\n");
+				}
+			}
 		}
 		Sleep(500);
 
@@ -213,21 +254,30 @@ int main(void) {
 		else if (cat_pos == scr_pos) {
 			printf("%s이(가) 스크래처를 긁으며 놀았습니다.\n", name); 
 			if (mood < 3) {
-				printf("%s의 기분이 조금 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
-				mood++;
+					printf("%s의 기분이 조금 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
+					mood++;
 			}
-			else {
-				printf("%s이(가) 행복해합니다.\n\n", name);
+			else if(mood == 3) {
+				printf("%s의 기분이 최고조입니다.\n\n", name);
+				mood == 3;
 			}
 		}
 		else if (cat_pos == tower_pos) {
 			printf("%s이(가) 캣타워를 뛰어다닙니다..\n", name);
 			if (mood < 3) {
-				printf("%s의 기분이 많이 좋아집니다: %d -> %d\n\n", name, mood, mood + 2);
-				mood += 2;
+				if (mood == 2) {
+					printf("%s의 기분이 좋아집니다: %d -> %d\n", name, mood, mood + 1);
+					printf("----기분이 3을 넘어갈 수 없습니다----\n\n");
+					mood++;
+				}
+				else {
+					printf("%s의 기분이 많이 좋아집니다: %d -> %d\n\n", name, mood, mood + 2);
+					mood += 2;
+				}
 			}
-			else {
-				printf("%s이(가) 매우 기분이 좋아 이리저리 뛰어다닙니다.\n\n", name);
+			else if (mood == 3) {
+				printf("%s의 기분이 최고조입니다.\n\n", name);
+				mood == 3;
 			}
 		}
 		Sleep(500);
