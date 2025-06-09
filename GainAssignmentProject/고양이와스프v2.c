@@ -139,10 +139,10 @@ int main(void) {
 			else if (scratcher) {
 				if (cat_pos != scr_pos) {
 					printf("%s가 스크래처로 갑니다.\n\n", name);
-					if (cat_pos < scratcher) {
+					if (cat_pos < scr_pos) {
 						cat_pos++; // 스크래처로 이동
 					}
-					else if (cat_pos > scratcher) {
+					else if (cat_pos > scr_pos) {
 						cat_pos--; // 스크래처로 이동
 					}
 				}
@@ -290,19 +290,30 @@ int main(void) {
 		int choice = -1; 
 		    //상호작용 선택지 입력
 		while (choice < 0 || choice > 1 + mouse_toy + laser_toy) {
-			printf("어떤상호작용을하시겠습니까?\n   0.아무것도하지않음\n   1.긁어주기\n");
-			if (mouse_toy) {
-				printf("   %d. 장난감 쥐로 놀아주기\n", mouse_state);
+			printf("어떤상호작용을하시겠습니까?\n   0. 아무것도하지않음\n   1. 긁어주기\n");
+			if (mouse_toy == 1 && laser_toy != 1) {
+				printf("   2. 장난감 쥐로 놀아주기\n");
 			}
-			if (laser_toy) {
-				printf("   %d. 레이저 포인터로 놀아주기\n", laser_state);
+			else if (mouse_toy != 1 && laser_toy == 1) {
+				printf("   2. 레이저 포인터로 놀아주기\n");
+			}
+			else if (mouse_toy == 1 && laser_toy == 1) {
+				printf("   2. 장난감 쥐로 놀아주기\n   3. 레이저 포인터로 놀아주기\n");
 			}
 			printf(">> ");
 			scanf_s("%d", &choice);
+			while (choice < 0 || choice > 4) {
+				printf("잘못된 선택입니다. 다시 입력해주세요.\n");
+				printf(">> ");
+				scanf_s("%d", &choice);
+			}
 		}
 		    //상호작용 선택지별 처리
 		if (choice == 0) {
 			printf("아무것도 하지 않습니다.\n");
+			printf("%s의 기분이 나빠집니다: %d\n", name, mood-1);
+			mood--;
+			printf("\n");
 			printf("주사위를 굴립니다. 또르르...\n");
 			mood--;
 			if (mood < 0) {
@@ -440,7 +451,7 @@ int main(void) {
 		while (!item_check) {
 			if (choice_item == 1) {
 				if (mouse_toy) {
-					printf("장난감 쥐는 이미 구매했습니다.\n\n");
+					printf("장난감 쥐는 이미 구매했습니다.\n");
 					printf("다시 선택해주세요.>> ");
 					scanf_s("%d", &choice_item); // 재입력
 					while (choice_item < 0 || choice_item > 4) {
@@ -453,18 +464,12 @@ int main(void) {
 				else if (cp >= 1) {
 					printf("장난감 쥐를 구매했습니다.\n");
 					mouse_toy = 1; // 장난감 쥐 구매
-					if (laser_toy) { //상품 번호 지정
-						mouse_state = 3;
-					}
-					else {
-						mouse_state = 2;
-					}
 					cp -= 1;
 					item_check = 1; // 구매 완료
 					printf("현재 보유 CP: %d 포인트\n\n", cp);
 				}
 				else {
-					printf("CP가 부족합니다. 장난감 쥐를 구매할 수 없습니다.\n\n");
+					printf("CP가 부족합니다. 장난감 쥐를 구매할 수 없습니다.\n");
 					printf("다시 선택해주세요.>> ");
 					scanf_s("%d", &choice_item); // 재입력
 					while (choice_item < 0 || choice_item > 4) {
@@ -477,7 +482,7 @@ int main(void) {
 			}
 			else if (choice_item == 2) {
 				if (laser_toy) {
-					printf("레이저 포인터는 이미 구매했습니다.\n\n");
+					printf("레이저 포인터는 이미 구매했습니다.\n");
 					printf("다시 선택해주세요.>> ");
 					scanf_s("%d", &choice_item); // 재입력
 					while (choice_item < 0 || choice_item > 4) {
@@ -490,18 +495,12 @@ int main(void) {
 				else if (cp >= 2) {
 					printf("레이저 포인터를 구매했습니다.\n");
 					laser_toy = 1; // 장난감 쥐 구매
-					if (mouse_toy) { //상품 번호 지정
-						laser_state = 3;
-					}
-					else {
-						laser_state = 2;
-					}
 					cp -= 2;
 					item_check = 1; // 구매 완료
 					printf("현재 보유 CP: %d 포인트\n\n", cp);
 				}
 				else {
-					printf("CP가 부족합니다. 레이저 포인터를 구매할 수 없습니다.\n\n");
+					printf("CP가 부족합니다. 레이저 포인터를 구매할 수 없습니다.\n");
 					printf("다시 선택해주세요.>> ");
 					scanf_s("%d", &choice_item); // 재입력
 					while (choice_item < 0 || choice_item > 4) {
@@ -514,7 +513,7 @@ int main(void) {
 			}
 			else if (choice_item == 3) {
 				if (scratcher) {
-					printf("스크래처는 이미 구매했습니다.\n\n");
+					printf("스크래처는 이미 구매했습니다.\n");
 					printf("다시 선택해주세요.>> ");
 					scanf_s("%d", &choice_item); // 재입력
 					while (choice_item < 0 || choice_item > 4) {
@@ -540,7 +539,7 @@ int main(void) {
 					printf("현재 보유 CP: %d 포인트\n\n", cp);
 				}
 				else {
-					printf("CP가 부족합니다. 스크래처를 구매할 수 없습니다.\n\n");
+					printf("CP가 부족합니다. 스크래처를 구매할 수 없습니다.\n");
 					printf("다시 선택해주세요.>> ");
 					scanf_s("%d", &choice_item); // 재입력
 					while (choice_item < 0 || choice_item > 4) {
@@ -553,7 +552,7 @@ int main(void) {
 			}
 			else if (choice_item == 4) {
 				if (cat_tower) {
-					printf("캣 타워는 이미 구매했습니다.\n\n");
+					printf("캣 타워는 이미 구매했습니다.\n");
 					printf("다시 선택해주세요.>> ");
 					scanf_s("%d", &choice_item); // 재입력
 					while (choice_item < 0 || choice_item > 4) {
@@ -579,7 +578,7 @@ int main(void) {
 					printf("현재 보유 CP: %d 포인트\n\n", cp);
 				}
 				else {
-					printf("CP가 부족합니다. 캣 타워를 구매할 수 없습니다.\n\n");
+					printf("CP가 부족합니다. 캣 타워를 구매할 수 없습니다.\n");
 					printf("다시 선택해주세요.>> ");
 					scanf_s("%d", &choice_item); // 재입력
 					while (choice_item < 0 || choice_item > 4) {
