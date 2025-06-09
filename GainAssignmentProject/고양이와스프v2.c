@@ -109,7 +109,7 @@ int main(void) {
 		}
 		else if (mood == 1) {
 			if (scratcher && cat_tower) {
-				int dist_scr = abs(cat_pos - scr_pos); 
+				int dist_scr = abs(cat_pos - scr_pos);
 				int dist_tower = abs(cat_pos - tower_pos);
 				if (dist_scr < dist_tower) {
 					int close_scr = 0;
@@ -159,7 +159,7 @@ int main(void) {
 				}
 			}
 			else {
-				printf("%s은(는) 놀 거리가 없어서 기분이 좋지 않습니다.\n\n", name);
+				printf("%s은(는) 놀 거리가 없어서 기분이 좋지 않습니다.\n", name);
 				printf("%s의 기분이 나빠집니다: %d -> %d\n\n", name, mood, mood - 1);
 				mood--;
 			}
@@ -172,7 +172,7 @@ int main(void) {
 			if (cat_pos != BOWL_POS) {
 				printf("%s가 냄비로 갑니다.\n\n", name);
 				if (cat_pos < ROOM_WIDTH - 2) {
-					 cat_pos++;
+					cat_pos++;
 				}
 				else {
 					printf("벽에 막혀 움직일 수 없습니다.\n\n");
@@ -185,6 +185,7 @@ int main(void) {
 		if (cat_pos == HOME_POS && prev_pos == HOME_POS) {
 			if (turn >= 2) {
 				if (mood < 3) {
+					printf("집에서 편안함을 느낍니다.\n");
 					printf("%s의 기분이 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
 					mood++;
 				}
@@ -208,12 +209,12 @@ int main(void) {
 			printf("현재까지 만든 수프: %d개\n\n", SoupCount);
 		}
 		else if (cat_pos == scr_pos) {
-			printf("%s이(가) 스크래처를 긁으며 놀았습니다.\n", name); 
+			printf("%s이(가) 스크래처를 긁으며 놀았습니다.\n", name);
 			if (mood < 3) {
-					printf("%s의 기분이 조금 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
-					mood++;
+				printf("%s의 기분이 조금 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
+				mood++;
 			}
-			else if(mood == 3) {
+			else if (mood == 3) {
 				printf("%s의 기분이 최고조입니다.\n\n", name);
 				mood == 3;
 			}
@@ -239,7 +240,7 @@ int main(void) {
 		Sleep(500);
 
 		//방 만들기
-	//첫 번째 줄
+		//첫 번째 줄
 		for (int i = 0; i < ROOM_WIDTH; i++) {
 			printf("#");
 		}
@@ -287,8 +288,8 @@ int main(void) {
 
 		// 상호작용 (고양이와 집사)
 		srand(time(NULL));
-		int choice = -1; 
-		    //상호작용 선택지 입력
+		int choice = -1;
+		//상호작용 선택지 입력
 		while (choice < 0 || choice > 1 + mouse_toy + laser_toy) {
 			printf("어떤상호작용을하시겠습니까?\n   0. 아무것도하지않음\n   1. 긁어주기\n");
 			if (mouse_toy == 1 && laser_toy != 1) {
@@ -308,14 +309,13 @@ int main(void) {
 				scanf_s("%d", &choice);
 			}
 		}
-		    //상호작용 선택지별 처리
+		//상호작용 선택지별 처리
 		if (choice == 0) {
 			printf("아무것도 하지 않습니다.\n");
-			printf("%s의 기분이 나빠집니다: %d\n", name, mood-1);
+			printf("%s의 기분이 나빠집니다: %d -> %d\n", name, mood, mood - 1);
 			mood--;
 			printf("\n");
 			printf("주사위를 굴립니다. 또르르...\n");
-			mood--;
 			if (mood < 0) {
 				mood = 0; // 기분이 0 아래로 떨어지지 않도록 함.
 			}
@@ -351,13 +351,36 @@ int main(void) {
 				printf("분발하세요. 집사!\n\n");
 			}
 		}
-		else if (choice == mouse_state && mouse_toy) {
-			printf("장난감 쥐로 %s와 놀아주었습니다.\n", name);
-			mood++;
-			if (mood > 3) {
-				mood = 3; // 기분이 3 위로 올라가지 않도록 함.
+		else if (choice == 2) {
+			if (mouse_toy == 1) {
+				printf("장난감 쥐로 %s와 놀아주었습니다.\n", name);
+				if (mood < 3) {
+					printf("%s의 기분이 조금 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
+					mood++;
+				}
+				else if (mood == 3) {
+					printf("%s의 기분이 최고조입니다.\n\n", name);
+					mood == 3;
+				}
 			}
-			printf("%s의 기분이 조금 좋아집니다: %d -> %d\n", name, mood - 1, mood);
+			else if (laser_toy == 1 && mouse_toy != 1) {
+				printf("레이저 포인터로 %s와 신나게 놀아주었습니다.\n", name);
+				if (mood < 3) {
+					if (mood == 2) {
+						printf("%s의 기분이 좋아집니다: %d -> %d\n", name, mood, mood + 1);
+						printf("----기분이 3을 넘어갈 수 없습니다----\n\n");
+						mood++;
+					}
+					else {
+						printf("%s의 기분이 많이 좋아집니다: %d -> %d\n\n", name, mood, mood + 2);
+						mood += 2;
+					}
+				}
+				else if (mood == 3) {
+					printf("%s의 기분이 최고조입니다.\n\n", name);
+					mood == 3;
+				}
+			}
 			int dice2 = rand() % 6 + 1;
 			printf("%d이(가) 나왔습니다.\n", dice2);
 			if (dice2 >= 4) {
@@ -372,28 +395,50 @@ int main(void) {
 				printf("%s가 흥미를 잃었습니다.\n", name);
 			}
 		}
-		else if (choice == laser_state && laser_toy) {
-			printf("레이저 포인터로 %s와 신나게 놀아주었습니다.\n", name);
-			mood += 2;
-			if (mood > 3) {
-				mood = 3; // 기분이 3 위로 올라가지 않도록 함.
-			}
-			printf("%s의 기분이 많이 좋아집니다: %d -> %d\n", name, mood - 2, mood );
-			int dice2 = rand() % 6 + 1;
-			printf("%d이(가) 나왔습니다.\n", dice2);
-			if (dice2 >= 2) {
-				printf("%s가 매우 신나합니다.\n", name);
-				printf("집사와의 관계가 많이 좋아집니다.\n\n");
-				affinity++;
-				if (affinity > 4) {
-					affinity = 4; // 친밀도가 4 위로 올라가지 않도록 함.
+		else if (choice == 3) {
+			if (mouse_toy == 1) {
+				printf("장난감 쥐로 %s와 놀아주었습니다.\n", name);
+				if (mood < 3) {
+					printf("%s의 기분이 조금 좋아집니다: %d -> %d\n\n", name, mood, mood + 1);
+					mood++;
+				}
+				else if (mood == 3) {
+					printf("%s의 기분이 최고조입니다.\n\n", name);
+					mood == 3;
 				}
 			}
-			else {
-				printf("집사가 피곤해합니다. %s가 실망합니다.\n\n", name);
+			else if (laser_toy == 1 && mouse_toy != 1) {
+				printf("레이저 포인터로 %s와 신나게 놀아주었습니다.\n", name);
+				if (mood < 3) {
+					if (mood == 2) {
+						printf("%s의 기분이 좋아집니다: %d -> %d\n", name, mood, mood + 1);
+						printf("----기분이 3을 넘어갈 수 없습니다----\n\n");
+						mood++;
+					}
+					else {
+						printf("%s의 기분이 많이 좋아집니다: %d -> %d\n\n", name, mood, mood + 2);
+						mood += 2;
+					}
+				}
+				else if (mood == 3) {
+					printf("%s의 기분이 최고조입니다.\n\n", name);
+					mood == 3;
+				}
+				int dice2 = rand() % 6 + 1;
+				printf("%d이(가) 나왔습니다.\n", dice2);
+				if (dice2 >= 2) {
+					printf("%s가 매우 신나합니다.\n", name);
+					printf("집사와의 관계가 많이 좋아집니다.\n\n");
+					affinity++;
+					if (affinity > 4) {
+						affinity = 4; // 친밀도가 4 위로 올라가지 않도록 함.
+					}
+				}
+				else {
+					printf("집사가 피곤해합니다. %s가 실망합니다.\n\n", name);
+				}
 			}
 		}
-		Sleep(500);
 
 		// CP 포인트 생산
 		printf("%s의 기분(0~3): %d\n", name, mood);
@@ -407,7 +452,7 @@ int main(void) {
 		}
 		cp += cp_gain;
 		printf("%s의 기분과 친밀도에 따라서 CP가 %d 포인트 생산되었습니다.\n\n", name, cp_gain);
-		
+
 		printf("현재 보유 CP: %d 포인트\n", cp);
 		//상점 목록
 		int choice_item = -1;
@@ -459,7 +504,7 @@ int main(void) {
 						printf(">> ");
 						scanf_s("%d", &choice_item);
 					}
-					continue; 
+					continue;
 				}
 				else if (cp >= 1) {
 					printf("장난감 쥐를 구매했습니다.\n");
@@ -616,5 +661,4 @@ int main(void) {
 		system("cls");
 	}
 	return 0;
-	// 완성
 }
